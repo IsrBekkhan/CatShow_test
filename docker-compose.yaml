@@ -1,0 +1,30 @@
+services:
+  cats_db:
+    container_name: cats_db
+    image: postgres:16.2
+    restart: always
+    environment:
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=admin
+      - POSTGRES_DB=cats_db
+    ports:
+      - '5432:5432'
+    volumes:
+      - ./cats_db/:/var/lib/postgresql/data
+
+  catshow_app:
+    container_name: cats_app
+    build:
+      dockerfile: ./Dockerfile
+    restart: always
+    command:
+      - "uvicorn"
+      - "main:app"
+      - "--host=0.0.0.0"
+      - "--port=8000"
+    ports:
+      - "8000:8000"
+    depends_on:
+      - cats_db
+
+
